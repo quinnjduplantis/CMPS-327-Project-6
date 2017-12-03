@@ -6,57 +6,167 @@ using MapGen;
 public class playerScript : MonoBehaviour {
 
     public MapTile[,] map;
-    public Vector2 goal, start;
-    public node myNode;
-    public List<node> TODO, DONE;
+    //public Vector2 goal, start;
+    MapTile goal, start;
+    public Node current, goalNode, startNode;
+    public List<Node> open, closed;
+    public int xMax, yMax;
 
 	// Use this for initialization
 	void Start () {
         // Find startNode
         // Find goalNode
-        // Put startNode in TODO list
+        // Put startNode in open list
         // Adjacents starting from startNode
-        // Find f of all adj nodes
-        // Put all adj nodes in TODO list, move startNode to DONE list
-        // Find TODO with best f
-        // Find adj nodes of best f TODO node
+        // Find f of all adj Nodes
+        // Set all adj Nodes parent to current Node
+        // Put all adj Nodes in open list, move startNode to closed list
+        // Find open with best f
+        // Find adj Nodes of best f open Node
         //      Loop
-        // If node you hit isGoal > Exit
-        // If TODO is empty > No path > Exit
-        // NO REPEATS: Before adding TODO, check DONE and TODO
-		foreach (MapTile m in map)
+        // If Node you hit isGoal > Exit
+        // If open is empty > No path > Exit
+        // NO REPEATS: Before adding open, check closed and open
+        Mapping();
+        FindPath(start, goal);
+	}
+
+    void Mapping()
+    {
+        foreach (MapTile m in map)
         {
+            if (m.IsGoal)
+            {
+                goal = m;
+                startNode = new Node(m);
+            }
+            goal = m;
             if (m.IsStart)
             {
-                node startNode = new node(m, calculateG(m, goal), 0);
-            }
-            else if (m.IsGoal)
-            {
-                node goalNode = new node(m, 0, calculateH(m, start));
-            }
-            else if (m.Walkable)
-            {
-                
+                start = m;
+                startNode = new Node(m);
             }
         }
-	}
-	
-    public int calculateG(MapTile current, Vector2 goal)
-    {
-        int x = Mathf.Abs((int) goal.x - current.X);
-        int y = Mathf.Abs((int) goal.y - current.Y);
-        return x + y;
+
+        current = startNode;
+        open.Add(current);
+        closed.Add(current);
+        if (closed.Contains(new Node(start)))
+            Debug.Log("Already closed.");
     }
 
-    public int calculateH(MapTile current, Vector2 start)
+    void FindPath(MapTile start, MapTile target)
     {
-        int x = Mathf.Abs((int) start.x - current.X);
-        int y = Mathf.Abs((int) start.y - current.Y);
-        return x + y;
+        bool done = false;
+        //current.f = 100; //maybe different number-- check later if issue
+
+        while (open.Count > 0)
+        {
+            for (int i = 0; i < open.Count; i++)
+            {
+                if (open[i].f < current.f || open[i].f == current.f && open[i].h < current.h)
+                {
+                    current = open[i];
+                }
+            }
+
+            closed.Add(current);
+            open.Remove(current);
+            //foreach (Node n in closed)
+            //{
+            //    if (n.tile == goalNode.tile)
+            //    {
+            //        done = true;
+            //        break;
+            //    }
+            //}
+            //if (done)
+            //{
+            //    break;
+            //}
+
+            if (current.tile == goalNode.tile)
+            {
+                break;
+            }
+
+            List<Node> adj = current.adjacents(map, xMax, yMax, start, goal);
+
+            foreach (Node a in adj)
+            {
+                if (!a.tile.Walkable || closed.Contains(a))
+                {
+                    continue;
+                }
+                bool inopen = false;
+                if (open.Contains(a))
+                {
+                    inopen = true;
+                    break;
+                }
+                if (!inopen)
+                {
+                    a.parent = current;
+                    open.Add(a);
+                    break;
+                }
+            }
+        }
+    }
+}
+
+public class Node
+{
+    public MapTile tile;
+    public Node parent;
+    public int g, h;
+
+    public int f
+    {
+        get
+        {
+            return g + h;
+        }
     }
 
-    // Update is called once per frame
-    void Update () {
-		
-	}
+    public Node()
+    {
+        tile = new MapTile();
+        g = 0;
+        h = 0;
+    }
+
+    public Node(MapTile m)
+    {
+        tile = m;
+    }
+
+    public Node(MapTile m, MapTile start, MapTile goal)
+    {
+        tile = m;
+        h = (Mathf.Abs(m.X - start.X) * 10) + (Mathf.Abs(m.X - start.Y) * 10);
+        g = (Mathf.Abs(goal.X - m.X) * 10) + (Mathf.Abs(goal.Y - m.Y) * 10);
+    }
+
+    public List<Node> adjacents(MapTile[,] map, int xMax, int yMax, MapTile start, MapTile goal)
+    {
+        List<Node> adjTiles = new List<Node>();
+        if (tile.X - 1 >= 0 && tile.Walkable)
+        {
+            adjTiles.Add(new Node(map[tile.X - 1, tile.Y], start, goal));
+        }
+        if (tile.X + 1 <= xMax && tile.Walkable)
+        {
+            adjTiles.Add(new Node(map[tile.X + 1, tile.Y], start, goal));
+        }
+        if (tile.Y - 1 >= 0 && tile.Walkable)
+        {
+            adjTiles.Add(new Node(map[tile.X, tile.Y - 1], start, goal));
+        }
+        if (tile.Y + 1 <= yMax && tile.Walkable)
+        {
+            adjTiles.Add(new Node(map[tile.X, tile.Y + 1], start, goal));
+        }
+        return adjTiles;
+    }
 }

@@ -33,12 +33,14 @@ public class MapExample : MonoBehaviour
                 Instantiate(startTile, pos, Quaternion.identity);
                 playerAI.transform.position = new Vector3(m.X + transform.position.x, m.Y + transform.position.y, -.5f);
                 playerAI.GetComponent<playerScript>().map = tiles1;
-                playerAI.GetComponent<playerScript>().start = new Vector2(m.X, m.Y);
+                playerAI.GetComponent<playerScript>().xMax = maxX;
+                playerAI.GetComponent<playerScript>().yMax = maxY;
+                //playerAI.GetComponent<playerScript>().start = new Vector2(m.X, m.Y);
             }
             else if (m.IsGoal)
             {
                 Instantiate(goalTile, pos, Quaternion.identity);
-                playerAI.GetComponent<playerScript>().goal = new Vector2(m.X, m.Y);
+                //playerAI.GetComponent<playerScript>().goal = new Vector2(m.X, m.Y);
             }
             else if (m.Walkable)
             {
@@ -54,47 +56,3 @@ public class MapExample : MonoBehaviour
     }
 }
 
-public class node
-{
-    MapTile m;
-    public node parent;
-    int f, g, h;
-
-    public List<MapTile> adjacents(MapTile[,] map, int xMax, int yMax)
-    {
-        List<MapTile> adjTiles = new List<MapTile>();
-        if (m.X - 1 >= 0)
-        {
-            adjTiles.Add(map[m.X - 1, m.Y]);
-        }
-        if (m.X + 1 <= xMax)
-        {
-            adjTiles.Add(map[m.X + 1, m.Y]);
-        }
-        if (m.Y - 1 >= 0)
-        {
-            adjTiles.Add(map[m.X, m.Y - 1]);
-        }
-        if (m.Y + 1 <= yMax)
-        {
-            adjTiles.Add(map[m.X, m.Y + 1]);
-        }
-
-        return adjTiles;
-    }
-
-    public node(MapTile m, int g, int h)
-    {
-
-    }
-
-    public node(MapTile m, node Parent, int g, int h)
-    {
-        this.m = m;
-        this.g = g;
-        this.h = h;
-        this.parent = Parent;
-    }
-
-
-}
