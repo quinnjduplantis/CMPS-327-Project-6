@@ -4,16 +4,19 @@ using System.Collections;
 // includes the MapGen namespace methods
 using MapGen;
 
+
+
 public class MapExample : MonoBehaviour
 {
     [SerializeField]
-    GameObject yesTile, noTile, startTile, goalTile, player, enemy;
+    GameObject yesTile, noTile, startTile, goalTile, player, enemy1, enemy2;
 
     [SerializeField]
     int maxX, maxY;
 
+    List<MapTile> walkables;
 
-	void Start ()
+	void Awake ()
     {
         PrimGenerator primGen = new PrimGenerator();
         // generate a map of size 20x20 with no extra walls removed
@@ -22,12 +25,25 @@ public class MapExample : MonoBehaviour
         // generates a map of size 20x20 with a large constraint (generates a tightly-packed map)
         MapTile[,] tiles3 = perlinGen.MapGen(maxX, maxY, 5.0f);
         GameObject playerAI = Instantiate(player, new Vector3(0, 0, -.5f), Quaternion.identity);
+        GameObject enemyAI1 = Instantiate(enemy1, new Vector3(0, 0, -.5f), Quaternion.identity);
+        walkables = new List<MapTile>();
+
+        foreach (MapTile m in tiles1)
+        {
+            if (m.Walkable)
+            {
+                walkables.Add(m);
+            }
+        }
 
         foreach (MapTile m in tiles1)
         {
 
             Vector3 pos = new Vector3(m.X + transform.position.x, m.Y + transform.position.y);
-
+            int walkableint = walkables.Count;
+            System.Random rnd = new System.Random();
+            int rndnum = rnd.Next(0, walkableint - 1);
+            
             if (m.IsStart)
             {
                 Instantiate(startTile, pos, Quaternion.identity);
@@ -46,6 +62,10 @@ public class MapExample : MonoBehaviour
             else if (m.Walkable)
             {
                 Instantiate(yesTile, pos, Quaternion.identity);
+                if (m == walkables[rndnum])
+                {
+                    enemyAI1.transform.position = new Vector3(m.X + transform.position.x, m.Y + transform.position.y, -.5f);
+                }
             }
             else if (!m.Walkable)
             {

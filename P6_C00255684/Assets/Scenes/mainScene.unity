@@ -437,7 +437,8 @@ MonoBehaviour:
   startTile: {fileID: 1100573409556884, guid: 9cb413921f5ee4248a6add660fb4d2b6, type: 2}
   goalTile: {fileID: 1663934795135996, guid: e2f73e7a6ca5c5c4a9262317a5afa75f, type: 2}
   player: {fileID: 1836718643875728, guid: c61a6d32474b04842996cd7ed3944c80, type: 2}
-  enemy: {fileID: 0}
+  enemy1: {fileID: 1930767442251580, guid: 447bdbf4c55cc244ea5d694f381790b7, type: 2}
+  enemy2: {fileID: 1032618562543482, guid: 6a82f61be5e0e974198443ef37f18119, type: 2}
   maxX: 20
   maxY: 20
 --- !u!4 &1965099935

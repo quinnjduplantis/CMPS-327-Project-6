@@ -11,7 +11,7 @@ public class playerScript : MonoBehaviour {
     public List<Node> open, closed, myPath;
     public int xMax, yMax;
     public float speed = 20.0f;
-    public Vector2 currentPos;
+    public Vector3 currentPos;
     public State state;
 
     public enum State
@@ -53,7 +53,6 @@ public class playerScript : MonoBehaviour {
                     Vector3 distance = new Vector3(myPath[0].tile.X, myPath[0].tile.Y, transform.position.z) - transform.position;
                     if (distance.magnitude < 0.1f)
                     {
-                        currentPos = new Vector2(myPath[0].tile.X, myPath[0].tile.Y);
                         transform.position = new Vector3(myPath[0].tile.X, myPath[0].tile.Y, transform.position.z);
                         myPath.Remove(myPath[0]);
                     }
@@ -74,7 +73,6 @@ public class playerScript : MonoBehaviour {
         current = new Node(start, start, target);
         open.Add(current);
         bool done = false;
-        //int n = 1;
         //current.f = 100; //maybe different number-- check later if issue
         //Debug.Log(current.ToString());
         while (open.Count > 0)
@@ -113,8 +111,6 @@ public class playerScript : MonoBehaviour {
                     Debug.Log(a.ToString());
                 }
             }
-
-            //n++;
         }
         if (done) {
             myPath.Add(current);
