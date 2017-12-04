@@ -17,7 +17,7 @@ public class MapExample : MonoBehaviour
     {
         PrimGenerator primGen = new PrimGenerator();
         // generate a map of size 20x20 with no extra walls removed
-        MapTile[,] tiles1 = primGen.MapGen(maxX, maxY, 0.0f);
+        MapTile[,] tiles1 = primGen.MapGen(maxX, maxY, 0.3f);
         PerlinGenerator perlinGen = new PerlinGenerator();
         // generates a map of size 20x20 with a large constraint (generates a tightly-packed map)
         MapTile[,] tiles3 = perlinGen.MapGen(maxX, maxY, 5.0f);
@@ -35,12 +35,13 @@ public class MapExample : MonoBehaviour
                 playerAI.GetComponent<playerScript>().map = tiles1;
                 playerAI.GetComponent<playerScript>().xMax = maxX;
                 playerAI.GetComponent<playerScript>().yMax = maxY;
-                //playerAI.GetComponent<playerScript>().start = new Vector2(m.X, m.Y);
+                playerAI.GetComponent<playerScript>().start = m;
+
             }
             else if (m.IsGoal)
             {
                 Instantiate(goalTile, pos, Quaternion.identity);
-                //playerAI.GetComponent<playerScript>().goal = new Vector2(m.X, m.Y);
+                playerAI.GetComponent<playerScript>().goal = m;
             }
             else if (m.Walkable)
             {
