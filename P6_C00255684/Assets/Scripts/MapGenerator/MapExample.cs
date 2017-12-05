@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections;
 // includes the MapGen namespace methods
 using MapGen;
-
+using UnityEngine.SceneManagement;
 
 
 public class MapExample : MonoBehaviour
@@ -14,6 +14,7 @@ public class MapExample : MonoBehaviour
     [SerializeField]
     int maxX, maxY;
 
+    public MapTile[,] map;
     List<MapTile> walkables;
 
 	void Awake ()
@@ -23,12 +24,15 @@ public class MapExample : MonoBehaviour
         MapTile[,] tiles1 = primGen.MapGen(maxX, maxY, 0.3f);
         PerlinGenerator perlinGen = new PerlinGenerator();
         // generates a map of size 20x20 with a large constraint (generates a tightly-packed map)
-        MapTile[,] tiles3 = perlinGen.MapGen(maxX, maxY, 5.0f);
+        map = perlinGen.MapGen(maxX, maxY, 5.0f);
         GameObject playerAI = Instantiate(player, new Vector3(0, 0, -.5f), Quaternion.identity);
         GameObject enemyAI1 = Instantiate(enemy1, new Vector3(0, 0, -.5f), Quaternion.identity);
+
+        playerAI.GetComponent<playerScript>().map = map;
+        //enemy1.GetComponent<enemyScript>().map = tiles3;
         walkables = new List<MapTile>();
 
-        foreach (MapTile m in tiles1)
+        foreach (MapTile m in map)
         {
             if (m.Walkable)
             {
@@ -36,7 +40,7 @@ public class MapExample : MonoBehaviour
             }
         }
 
-        foreach (MapTile m in tiles1)
+        foreach (MapTile m in map)
         {
 
             Vector3 pos = new Vector3(m.X + transform.position.x, m.Y + transform.position.y);
@@ -48,7 +52,6 @@ public class MapExample : MonoBehaviour
             {
                 Instantiate(startTile, pos, Quaternion.identity);
                 playerAI.transform.position = new Vector3(m.X + transform.position.x, m.Y + transform.position.y, -.5f);
-                playerAI.GetComponent<playerScript>().map = tiles1;
                 playerAI.GetComponent<playerScript>().xMax = maxX;
                 playerAI.GetComponent<playerScript>().yMax = maxY;
                 playerAI.GetComponent<playerScript>().start = m;
@@ -74,6 +77,16 @@ public class MapExample : MonoBehaviour
             
         }
         
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            SceneManager.LoadScene("menuScene");
+        }
+        
+
     }
 }
 

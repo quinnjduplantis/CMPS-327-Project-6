@@ -28,23 +28,23 @@ public class enemyScript : MonoBehaviour {
         closed = new List<Node>();
         myPath = new List<Node>();
         state = State.Idle;
+        map = GameObject.Find("TileManager").GetComponent<MapExample>().map;
         player = GameObject.FindGameObjectWithTag("Player");
         playerPos = player.transform.position;
-        goal = map[Mathf.RoundToInt(playerPos.x), Mathf.RoundToInt(playerPos.y)];
+        goal = map[Mathf.FloorToInt(playerPos.x), Mathf.FloorToInt(playerPos.y)];
         myPos = transform.position;
         start = map[Mathf.RoundToInt(myPos.x), Mathf.RoundToInt(myPos.y)];
         FindPath(start, goal);
-        
     }
 
     void Update()
     {
+        
         switch (state)
         {
             case State.Idle:
                 break;
             case State.RenewPath:
-                distTraveled = 0;
                 playerPos = player.transform.position;
                 goal = map[Mathf.RoundToInt(playerPos.x), Mathf.RoundToInt(playerPos.y)];
                 myPos = transform.position;
@@ -66,7 +66,9 @@ public class enemyScript : MonoBehaviour {
                 }
                 else
                 {
-                    state = State.Idle;
+                    state = State.RenewPath;
+                    open.Clear();
+                    closed.Clear();
                 }
                 break;
         }
@@ -111,7 +113,7 @@ public class enemyScript : MonoBehaviour {
                 {
                     a.parent = current;
                     open.Add(a);
-                    Debug.Log(a.ToString());
+                    //Debug.Log(a.ToString());
                 }
             }
         }
@@ -124,8 +126,12 @@ public class enemyScript : MonoBehaviour {
                 myPath.Add(current);
             }
             myPath.Reverse();
+            while (myPath.Count > 2)
+            {
+                myPath.Remove(myPath[myPath.Count - 1]);
+            }
             state = State.Chasing;
-            Debug.Log("Enemy has a path");
+            //Debug.Log("Enemy has a path");
         }
         else
         {

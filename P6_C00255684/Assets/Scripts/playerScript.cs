@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using MapGen;
+using UnityEngine.SceneManagement;
 
 public class playerScript : MonoBehaviour {
 
@@ -63,6 +64,7 @@ public class playerScript : MonoBehaviour {
                 }
                 break;
             case State.Remake:
+                SceneManager.LoadScene("mainScene");
                 state = State.Idle;
                 break;
         }
@@ -108,7 +110,7 @@ public class playerScript : MonoBehaviour {
                 {
                     a.parent = current;
                     open.Add(a);
-                    Debug.Log(a.ToString());
+                    //Debug.Log(a.ToString());
                 }
             }
         }
@@ -121,9 +123,10 @@ public class playerScript : MonoBehaviour {
             }
             myPath.Reverse();
             state = State.Moving;
-            Debug.Log("I has a path");
+            //Debug.Log("I has a path");
         } else {
-            Debug.Log("No valid path found.");
+            //Debug.Log("No valid path found.");
+            state = State.Remake;
         }
     }
 
@@ -134,6 +137,22 @@ public class playerScript : MonoBehaviour {
             Gizmos.color = Color.blue;
             Gizmos.DrawSphere(new Vector3(node.tile.X, node.tile.Y, 1), .5f);
         }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("other = " + other.gameObject.name);
+        //Destroy(gameObject);
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("col name = " + collision.gameObject.name);
+        if (collision.gameObject.tag == "Enemy1")
+        {
+            SceneManager.LoadScene("mainScene");
+        }
+        
     }
 }
 

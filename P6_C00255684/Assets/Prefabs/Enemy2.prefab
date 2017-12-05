@@ -22,7 +22,6 @@ GameObject:
   - component: {fileID: 33988219005332952}
   - component: {fileID: 135965639931271698}
   - component: {fileID: 23212728831934430}
-  - component: {fileID: 114082053285407218}
   m_Layer: 0
   m_Name: Enemy2
   m_TagString: Untagged
@@ -82,22 +81,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1032618562543482}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &114082053285407218
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1032618562543482}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 401d996918f5f7f4db573f35165f5d64, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  xMax: 0
-  yMax: 0
-  speed: 20
-  currentPos: {x: 0, y: 0}
-  state: 0
 --- !u!135 &135965639931271698
 SphereCollider:
   m_ObjectHideFlags: 1
